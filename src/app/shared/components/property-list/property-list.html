@@ -1,0 +1,115 @@
+@if (properties().length === 0) {
+<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  @for (i of [1,2,3,4]; track i) {
+  <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 p-0 animate-pulse">
+    <div class="h-64 bg-gray-200 w-full"></div>
+    <div class="p-6 space-y-4">
+      <div class="h-6 bg-gray-200 rounded-full w-3/4"></div>
+      <div class="h-4 bg-gray-100 rounded-full w-1/2"></div>
+      <div class="h-px bg-gray-50 w-full"></div>
+      <div class="flex justify-between">
+        <div class="h-10 bg-gray-50 rounded-xl w-16"></div>
+        <div class="h-10 bg-gray-50 rounded-xl w-16"></div>
+        <div class="h-10 bg-gray-50 rounded-xl w-16"></div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+} @else {
+<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 animate-in fade-in duration-700">
+  @for (property of properties(); track property.id) {
+  <div class="group bg-white rounded-3xl overflow-hidden hover:shadow-[0_20px_40px_-5px_rgba(0,0,0,0.1)] 
+             transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-gray-100"
+    (click)="viewProperty(property.id)">
+    <!-- Image -->
+    <div class="relative h-64 overflow-hidden">
+      <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors z-10"></div>
+      <img [src]="'/assets/images/' + property.images[0]" [alt]="property.name"
+        class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
+
+      <!-- Availability Badge -->
+      <span
+        class="absolute top-4 left-4 px-3 py-1.5 text-[11px] font-semibold tracking-wide rounded-full z-20 backdrop-blur-md shadow-sm"
+        [class.bg-white_90]="property.available" [class.text-emerald-700]="property.available"
+        [class.bg-white]="property.available" [class.text-gray-500]="!property.available">
+        <span class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full" [class.bg-emerald-500]="property.available"
+            [class.bg-gray-400]="!property.available"></span>
+          {{ property.available ? 'AVAILABLE' : 'UNAVAILABLE' }}
+        </span>
+      </span>
+
+      <!-- Edit Button -->
+      <button
+        class="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-md rounded-full z-20 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white text-gray-700 hover:text-blue-600"
+        (click)="editProperty($event, property.id)">
+        <i class="fa-solid fa-pen-to-square text-xs"></i>
+      </button>
+
+      <!-- Price Tag Overlay -->
+      <div class="absolute bottom-4 left-4 right-4 z-20">
+        <div
+          class="inline-flex items-baseline gap-1 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg shadow-black/5">
+          <span class="text-lg font-bold text-gray-900">₹{{ property.price }}</span>
+          <span class="text-xs font-medium text-gray-500">/mo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 space-y-4">
+      <!-- Title & Location -->
+      <div>
+        <h2 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-[#007AFF] transition-colors">
+          {{ property.name }}
+        </h2>
+        <div class="flex items-start gap-1.5 mt-2 text-gray-500">
+          <i class="fa-solid fa-location-dot mt-1 text-[10px] opacity-70"></i>
+          <p class="text-sm font-medium leading-relaxed opacity-90">
+            {{ property?.location?.address }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="h-px bg-gray-50 w-full"></div>
+
+      <!-- Property Info -->
+      <div class="flex items-center justify-between px-2">
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-xl font-semibold text-gray-900">{{ property.bedrooms }}</span>
+          <span class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Beds</span>
+        </div>
+        <div class="w-px h-8 bg-gray-100"></div>
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-xl font-semibold text-gray-900">{{ property.bathrooms }}</span>
+          <span class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Baths</span>
+        </div>
+        <div class="w-px h-8 bg-gray-100"></div>
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-xl font-semibold text-gray-900">{{ property.size_sqft }}</span>
+          <span class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Sqft</span>
+        </div>
+      </div>
+
+      <!-- Amenities -->
+      <div class="pt-2 flex flex-wrap gap-2">
+        @for (amenity of property.amenities.slice(0, 3); track amenity) {
+        <span class="text-[11px] font-medium px-2.5 py-1 rounded-lg
+                         bg-gray-50 text-gray-600 border border-gray-100">
+          {{ amenity }}
+        </span>
+        }
+
+        @if (property.amenities.length > 3) {
+        <span class="text-[11px] font-medium px-2.5 py-1 text-gray-400">
+          +{{ property.amenities.length - 3 }}
+        </span>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>
+}

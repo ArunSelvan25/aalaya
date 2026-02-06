@@ -1,0 +1,32 @@
+<div class="p-8 min-h-screen space-y-8 max-w-5xl mx-auto">
+  <div class="">
+    <!-- Header -->
+    <div class="mb-10 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
+          Properties
+        </h1>
+        <p class="text-gray-500 mt-1 text-sm font-medium">Manage your real estate portfolio</p>
+      </div>
+
+      <button
+        class="px-5 py-2.5 bg-[#007AFF] text-white text-sm font-medium rounded-full shadow-lg shadow-blue-500/30 hover:bg-[#0060DF] hover:shadow-blue-500/40 transition-all duration-300 transform active:scale-95"
+        (click)="openDrawer()">
+        + Add Property
+      </button>
+    </div>
+
+    <!-- Property Grid -->
+
+    <app-property-list [properties]="properties" [isLoading]="isLoading()" (edit)="editProperty($event)" />
+
+    @if (isDrawerOpen()) {
+    <div class="fixed inset-0 bg-gray-900/20 backdrop-blur-sm z-40 transition-opacity duration-300"
+      (click)="closeDrawer()"></div>
+
+    <app-property-add [open]="isDrawerOpen()" [form]="propertyForm" [mode]="editingPropertyId() ? 'edit' : 'add'"
+      (close)="closeDrawer()" (save)="saveProperty()" />
+    }
+  </div>
+
+</div>

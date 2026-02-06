@@ -1,3 +1,71 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import "tailwindcss";
+
+@theme {
+  --color-primary: oklch(0.6162 0.2245 145.59);
+  --color-primary-hover: oklch(0.5867 0.1628 145.59);
+  --color-primary-active: oklch(0.5867 0.1628 145.59);
+
+  /* ===== TEXT ===== */
+  --color-text: oklch(0.18 0 0);
+  --color-text-muted: oklch(0.42 0 0);
+  --color-text-hover: oklch(0.12 0 0);
+
+  /* ===== APPLE STYLE THEME ===== */
+  --color-apple-bg: oklch(0.98 0.005 240);
+  --color-apple-card-bg: oklch(1 0 0 / 0.7);
+  --color-apple-card-border: oklch(1 0 0 / 0.1);
+  --apple-shadow: 0 10px 30px -10px oklch(0 0 0 / 0.05), 0 4px 10px -5px oklch(0 0 0 / 0.05);
+  --apple-radius: 24px;
+  --apple-blur: blur(20px);
+}
+
+@layer utilities {
+  .apple-glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg;
+    box-shadow: var(--apple-shadow);
+    border-radius: var(--apple-radius);
+  }
+
+  .apple-card {
+    @apply bg-white border border-gray-100 shadow-sm transition-all duration-300;
+    box-shadow: 0 2px 40px -12px oklch(0 0 0 / 0.08);
+    border-radius: var(--apple-radius);
+  }
+
+  .apple-card:hover {
+    box-shadow: 0 8px 50px -12px oklch(0 0 0 / 0.12);
+    transform: translateY(-2px);
+  }
+
+  .apple-text-title {
+    @apply text-2xl font-semibold tracking-tight text-gray-900;
+  }
+
+  .apple-text-subtitle {
+    @apply text-sm font-medium text-gray-500 uppercase tracking-wider;
+  }
+
+  .menu-text {
+    @apply text-sm text-gray-700 whitespace-nowrap max-w-0 overflow-hidden group-hover:max-w-[200px] opacity-0 group-hover:opacity-100 transition-all duration-200;
+  }
+}
+
+.active-link {
+  @apply bg-primary;
+}
+
+.btn-primary {
+  @apply px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary-hover cursor-pointer
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-600 mb-1;
+}
+
+.form-input {
+  @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition;
+}

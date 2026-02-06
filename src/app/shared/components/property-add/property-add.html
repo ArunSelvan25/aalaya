@@ -1,0 +1,275 @@
+<div class="fixed inset-0 z-50 flex items-center justify-end overflow-hidden transition-opacity duration-300"
+  [class.opacity-100]="open" [class.opacity-0.pointer-events-none]="!open">
+
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-gray-900/20 backdrop-blur-sm transition-opacity duration-300" (click)="close.emit()">
+  </div>
+
+  <!-- Drawer Container -->
+  <div
+    class="relative h-full w-full sm:w-[580px] bg-white/95 backdrop-blur-xl shadow-2xl transform transition-transform duration-500 ease-out flex flex-col"
+    [class.translate-x-0]="open" [class.translate-x-full]="!open">
+
+    <!-- Premium Header -->
+    <div class="px-8 h-24 flex items-center justify-between border-b border-gray-100/50">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+          {{ mode === 'add' ? 'New Property' : 'Edit Property' }}
+        </h2>
+        <p class="text-sm font-medium text-gray-400 mt-1">
+          {{ mode === 'add' ? 'Add a new listing to your portfolio' : 'Update the details of your property' }}
+        </p>
+      </div>
+      <button
+        class="p-2.5 rounded-full bg-gray-50 text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all active:scale-90"
+        (click)="close.emit()">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Smooth Scrolling Form Body -->
+    <form [formGroup]="form" class="flex-1 overflow-y-auto px-8 py-8 space-y-10">
+
+      <!-- Section: Essential Details -->
+      <section class="space-y-6">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+          <h3 class="text-[11px] font-bold tracking-widest text-gray-400 uppercase">Essential Details</h3>
+        </div>
+
+        <div class="space-y-4">
+          <div class="group">
+            <label class="block text-[13px] font-semibold text-gray-500 mb-1.5 ml-1">Property Title</label>
+            <input
+              class="w-full h-12 px-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200/50 focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all text-[15px] font-medium placeholder:text-gray-300"
+              placeholder="e.g. Modern Penthouse with View" formControlName="name" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="group">
+              <label class="block text-[13px] font-semibold text-gray-500 mb-1.5 ml-1">Type</label>
+              <select
+                class="w-full h-12 px-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200/50 focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all text-[15px] font-medium appearance-none"
+                formControlName="type">
+                <option>Apartment</option>
+                <option>Villa</option>
+                <option>House</option>
+                <option>Office</option>
+                <option>Condo</option>
+                <option>Loft</option>
+              </select>
+            </div>
+
+            <div class="group relative">
+              <label class="block text-[13px] font-semibold text-gray-500 mb-1.5 ml-1">Rent Amount</label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
+                <input type="number"
+                  class="w-full h-12 pl-8 pr-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200/50 focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all text-[15px] font-bold"
+                  placeholder="0.00" formControlName="rent" />
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="group">
+              <label class="block text-[13px] font-semibold text-gray-500 mb-1.5 ml-1">Billing Cycle</label>
+              <select
+                class="w-full h-12 px-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200/50 focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all text-[15px] font-medium appearance-none"
+                formControlName="billingCycle">
+                <option>Monthly</option>
+                <option>Quarterly</option>
+                <option>Yearly</option>
+              </select>
+            </div>
+            <div class="group">
+              <label class="block text-[13px] font-semibold text-gray-500 mb-1.5 ml-1">Furnishing</label>
+              <select
+                class="w-full h-12 px-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200/50 focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all text-[15px] font-medium appearance-none"
+                formControlName="furnishing">
+                <option>Unfurnished</option>
+                <option>Semi-Furnished</option>
+                <option>Fully Furnished</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Location & Space -->
+      <section class="space-y-6">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+          <h3 class="text-[11px] font-bold tracking-widest text-gray-400 uppercase">Location & Configuration</h3>
+        </div>
+
+        <div class="space-y-4">
+          <div class="group">
+            <label class="block text-[13px] font-semibold text-gray-500 mb-1.5 ml-1">Address</label>
+            <textarea
+              class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200/50 focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all text-[15px] font-medium resize-none min-h-[80px]"
+              placeholder="e.g. 123 Sky Tower, Downtown" formControlName="address"></textarea>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+            <div
+              class="text-center group p-4 rounded-2xl bg-gray-50 ring-1 ring-gray-200/50 transition-all hover:ring-blue-200 hover:bg-blue-50/10">
+              <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Beds</label>
+              <input type="number"
+                class="w-full bg-transparent border-none text-center text-lg font-bold p-0 focus:ring-0"
+                formControlName="bedrooms" />
+            </div>
+            <div
+              class="text-center group p-4 rounded-2xl bg-gray-50 ring-1 ring-gray-200/50 transition-all hover:ring-blue-200 hover:bg-blue-50/10">
+              <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Baths</label>
+              <input type="number"
+                class="w-full bg-transparent border-none text-center text-lg font-bold p-0 focus:ring-0"
+                formControlName="bathrooms" />
+            </div>
+            <div
+              class="text-center group p-4 rounded-2xl bg-gray-50 ring-1 ring-gray-200/50 transition-all hover:ring-blue-200 hover:bg-blue-50/10">
+              <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Sqft</label>
+              <input type="number"
+                class="w-full bg-transparent border-none text-center text-lg font-bold p-0 focus:ring-0"
+                formControlName="size_sqft" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Amenities -->
+      <section class="space-y-6">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <div class="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
+            <h3 class="text-[11px] font-bold tracking-widest text-gray-400 uppercase">Amenities</h3>
+          </div>
+          <button type="button"
+            class="text-[11px] font-bold text-blue-600 hover:text-blue-700 active:scale-95 transition-all"
+            (click)="addAmenity()">+ ADD NEW</button>
+        </div>
+
+        <div formArrayName="amenities" class="grid grid-cols-1 gap-2">
+          @for (ctrl of amenitiesArray.controls; let i = $index; track i) {
+          <div class="flex items-center gap-2 group animate-in slide-in-from-right-2 duration-300">
+            <span class="text-xs font-bold text-gray-300 w-4">{{ i+1 }}</span>
+            <input
+              class="flex-1 h-11 px-4 rounded-xl bg-gray-50 border-none ring-1 ring-gray-200/50 focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all text-sm font-medium"
+              placeholder="e.g. Roof Terrace" [formControlName]="i" />
+            <button type="button"
+              class="p-2.5 rounded-xl text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+              (click)="removeAmenity(i)">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
+          </div>
+          }
+        </div>
+      </section>
+
+      <!-- Section: Rules & Settings -->
+      <section class="space-y-6">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+          <h3 class="text-[11px] font-bold tracking-widest text-gray-400 uppercase">Rules & Settings</h3>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label
+            class="flex items-center justify-between p-4 rounded-2xl bg-gray-50 ring-1 ring-gray-200/50 cursor-pointer hover:bg-gray-100/50 transition-all group">
+            <span class="text-[13px] font-semibold text-gray-600">Available</span>
+            <div class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="available" class="sr-only peer">
+              <div
+                class="w-10 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500">
+              </div>
+            </div>
+          </label>
+          <label
+            class="flex items-center justify-between p-4 rounded-2xl bg-gray-50 ring-1 ring-gray-200/50 cursor-pointer hover:bg-gray-100/50 transition-all group">
+            <span class="text-[13px] font-semibold text-gray-600">Pets Allowed</span>
+            <div class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="petsAllowed" class="sr-only peer">
+              <div
+                class="w-10 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500">
+              </div>
+            </div>
+          </label>
+          <label
+            class="flex items-center justify-between p-4 rounded-2xl bg-gray-50 ring-1 ring-gray-200/50 cursor-pointer hover:bg-gray-100/50 transition-all group">
+            <span class="text-[13px] font-semibold text-gray-600">Smoking</span>
+            <div class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="smokingAllowed" class="sr-only peer">
+              <div
+                class="w-10 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500">
+              </div>
+            </div>
+          </label>
+          <label
+            class="flex items-center justify-between p-4 rounded-2xl bg-gray-50 ring-1 ring-gray-200/50 cursor-pointer hover:bg-gray-100/50 transition-all group">
+            <span class="text-[13px] font-semibold text-gray-600">Parties</span>
+            <div class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="partiesAllowed" class="sr-only peer">
+              <div
+                class="w-10 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500">
+              </div>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section: Images -->
+      <section class="space-y-6">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <div class="w-1.5 h-1.5 rounded-full bg-red-400"></div>
+            <h3 class="text-[11px] font-bold tracking-widest text-gray-400 uppercase">Visuals</h3>
+          </div>
+          <button type="button" class="text-[11px] font-bold text-blue-600 hover:text-blue-700 transition-all"
+            (click)="fileInput.click()">+ UPLOAD</button>
+        </div>
+
+        <input type="file" multiple hidden #fileInput (change)="onImageSelect($event)" />
+
+        <div class="grid grid-cols-4 gap-3">
+          @for (img of images.controls; let i = $index; track i) {
+          <div
+            class="relative aspect-square group rounded-2xl overflow-hidden ring-1 ring-gray-200 shadow-sm animate-in zoom-in-50 duration-300">
+            <img [src]="img.value | filePreview"
+              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <button type="button"
+              class="absolute top-1 right-1 w-6 h-6 bg-black/60 backdrop-blur-md text-white text-[10px] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+              (click)="removeImage(i)">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+          }
+
+          <div (click)="fileInput.click()"
+            class="aspect-square rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all group">
+            <i class="fa-solid fa-plus text-gray-300 group-hover:text-blue-500 text-xl transition-colors"></i>
+            <span
+              class="text-[10px] font-bold text-gray-400 group-hover:text-blue-600 mt-2 uppercase tracking-tighter">Add
+              Photo</span>
+          </div>
+        </div>
+      </section>
+
+    </form>
+
+    <!-- Visual Footer Controls -->
+    <div class="px-8 py-6 border-t border-gray-100 flex items-center justify-between bg-white/50 backdrop-blur-md">
+      <button
+        class="px-6 py-3 rounded-2xl text-[14px] font-bold text-gray-500 hover:bg-gray-50 transition-all active:scale-95"
+        (click)="close.emit()">
+        Cancel
+      </button>
+      <button
+        class="px-10 py-3 rounded-2xl bg-blue-600 text-white text-[14px] font-bold shadow-xl shadow-blue-500/30 hover:bg-blue-700 hover:shadow-blue-500/40 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95 flex items-center gap-2"
+        [disabled]="form.invalid" (click)="save.emit()">
+        <i class="fa-solid fa-check text-xs"></i>
+        {{ mode === 'add' ? 'Create Listing' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>

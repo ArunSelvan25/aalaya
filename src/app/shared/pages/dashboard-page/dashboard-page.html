@@ -1,0 +1,39 @@
+<div class="dashboard-container max-w-5xl mx-auto p-8 min-h-screen space-y-8">
+
+  <header class="flex justify-between items-end mb-4">
+    <div>
+      <h1 class="apple-text-title text-3xl">Dashboard</h1>
+      <p class="text-gray-500 mt-1">Overview of your rental empire</p>
+    </div>
+    <div class="flex gap-3">
+      <button
+        class="px-4 py-2 rounded-full bg-black/5 hover:bg-black/10 transition text-sm font-medium border border-black/5">
+        Export Report
+      </button>
+    </div>
+  </header>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <app-stat-card title="Total Properties" [value]="totalProperties().toString()" icon="fa-house"></app-stat-card>
+    <app-stat-card title="Active Leases" [value]="activeLeases().toString()" icon="fa-file-signature"></app-stat-card>
+    <app-stat-card title="Vacant Units" [value]="vacantUnits().toString()" icon="fa-door-open"></app-stat-card>
+    <app-stat-card title="Monthly Revenue" [value]="monthlyRevenue()" icon="fa-money-bill-trend-up"></app-stat-card>
+  </div>
+
+  <!-- Charts + Status -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <app-revenue-card class="lg:col-span-2"></app-revenue-card>
+    <app-occupancy-card></app-occupancy-card>
+  </div>
+
+  <!-- Maintenance + Activity -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <app-maintenance-card></app-maintenance-card>
+    <app-activity-feed></app-activity-feed>
+  </div>
+
+  <!-- Quick Actions -->
+  <app-quick-actions></app-quick-actions>
+
+</div>

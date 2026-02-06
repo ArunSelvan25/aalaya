@@ -1,0 +1,261 @@
+<div class="min-h-screen bg-[#F5F5F7] pb-12">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a routerLink="/tenants"
+                        class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-2"></i>
+                        Tenants
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-chevron-right text-gray-300 mx-2 text-xs"></i>
+                        <span class="text-sm font-medium text-gray-900">{{ tenant()?.firstName }} {{ tenant()?.lastName
+                            }}</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        @if (tenant()) {
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Column: Profile Card -->
+            <div class="lg:col-span-4 space-y-6">
+                <div
+                    class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-[#007AFF]/10 to-indigo-50/50">
+                    </div>
+                    <div class="relative z-10">
+                        <div class="h-28 w-28 mx-auto rounded-full bg-white p-1 shadow-sm mb-4">
+                            <div
+                                class="h-full w-full rounded-full bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center text-gray-400 text-3xl font-bold tracking-tighter border border-gray-100">
+                                {{ tenant()?.firstName?.[0] }}{{ tenant()?.lastName?.[0] }}
+                            </div>
+                        </div>
+                        <h1 class="text-2xl font-bold text-gray-900 tracking-tight mb-1">{{ tenant()?.firstName }} {{
+                            tenant()?.lastName }}</h1>
+                        <span [class]="getStatusClass(tenant()?.status || '')"
+                            class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide">
+                            {{ tenant()?.status }}
+                        </span>
+
+                        <div class="mt-8 space-y-4 text-left">
+                            <div class="flex items-center gap-4 p-3 rounded-2xl bg-gray-50 border border-gray-100">
+                                <div
+                                    class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-gray-400 shadow-sm shrink-0">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Email
+                                    </p>
+                                    <p class="text-sm font-medium text-gray-900 truncate" title="{{ tenant()?.email }}">
+                                        {{ tenant()?.email }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4 p-3 rounded-2xl bg-gray-50 border border-gray-100">
+                                <div
+                                    class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-gray-400 shadow-sm shrink-0">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Phone
+                                    </p>
+                                    <p class="text-sm font-medium text-gray-900">{{ tenant()?.phone }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4 p-3 rounded-2xl bg-gray-50 border border-gray-100">
+                                <div
+                                    class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-gray-400 shadow-sm shrink-0">
+                                    <i class="fa-regular fa-calendar"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                                        Joined</p>
+                                    <p class="text-sm font-medium text-gray-900">{{ tenant()?.createdAt |
+                                        date:'mediumDate' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (tenant()?.emergencyContact) {
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-truck-medical text-red-500"></i> Emergency Contact
+                    </h3>
+                    <div class="p-4 bg-red-50/50 rounded-2xl border border-red-100">
+                        <p class="font-semibold text-gray-900">{{ tenant()?.emergencyContact?.name }}</p>
+                        <p class="text-xs text-red-600 font-medium mb-1">{{ tenant()?.emergencyContact?.relation }}</p>
+                        <p class="text-sm text-gray-600">{{ tenant()?.emergencyContact?.phone }}</p>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Right Column: Details -->
+            <div class="lg:col-span-8 space-y-8">
+
+                <!-- Leases -->
+                <section>
+                    <div class="flex items-center justify-between mb-4 px-1">
+                        <h2 class="text-lg font-bold text-gray-900">Lease Agreements</h2>
+                        @if (tenantLeases().length > 0) {
+                        <span class="px-2.5 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">{{
+                            tenantLeases().length }}</span>
+                        }
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                        @for (lease of tenantLeases(); track lease.id) {
+                        <div
+                            class="p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors group">
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+                                        <i class="fa-solid fa-file-contract text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 text-base mb-1">{{ lease.propertyName }}</h4>
+                                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                                            <span class="font-medium text-gray-700">Unit {{ lease.unitId }}</span>
+                                            <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                            <span>{{ lease.startDate | date:'mediumDate' }} — {{ lease.endDate |
+                                                date:'mediumDate' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="flex flex-col items-end gap-1">
+                                        <span class="font-bold text-lg text-gray-900">${{ lease.rentAmount }}<span
+                                                class="text-xs text-gray-400 font-normal">/{{ lease.paymentFrequency
+                                                }}</span></span>
+                                        <span [class]="getLeaseStatusClass(lease.status)">{{ lease.status }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        } @empty {
+                        <div class="p-12 text-center text-gray-400">
+                            <i class="fa-regular fa-folder-open text-4xl mb-3 opacity-50"></i>
+                            <p>No active leases found</p>
+                        </div>
+                        }
+                    </div>
+                </section>
+
+                <!-- Finance -->
+                <section>
+                    <div class="flex items-center justify-between mb-4 px-1">
+                        <h2 class="text-lg font-bold text-gray-900">Recent Transactions</h2>
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50/50 border-b border-gray-100">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-4 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-widest pl-8">
+                                            Date</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+                                            Description</th>
+                                        <th
+                                            class="px-6 py-4 text-right text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+                                            Amount</th>
+                                        <th
+                                            class="px-6 py-4 text-right text-[11px] font-semibold text-gray-400 uppercase tracking-widest pr-8">
+                                            Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-50">
+                                    @for (tx of tenantTransactions(); track tx.id) {
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="px-6 py-4 pl-8 text-sm text-gray-500">{{ tx.date | date:'MMM d, y' }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ tx.description }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm font-medium text-right"
+                                            [class.text-green-600]="tx.type === 'Income'"
+                                            [class.text-gray-900]="tx.type !== 'Income'">
+                                            {{ tx.type === 'Income' ? '+' : '-' }}${{ tx.amount }}
+                                        </td>
+                                        <td class="px-6 py-4 pr-8 text-right">
+                                            <span [class]="getPaymentStatusClass(tx.status)">{{ tx.status }}</span>
+                                        </td>
+                                    </tr>
+                                    } @empty {
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-12 text-center text-gray-400">
+                                            No transactions on record
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Maintenance -->
+                <section>
+                    <div class="flex items-center justify-between mb-4 px-1">
+                        <h2 class="text-lg font-bold text-gray-900">Maintenance History</h2>
+                    </div>
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-2">
+                        <div class="space-y-1">
+                            @for (req of tenantMaintenance(); track req.id) {
+                            <div
+                                class="group p-4 rounded-2xl hover:bg-gray-50 transition-all cursor-default border border-transparent hover:border-gray-100">
+                                <div class="flex items-start gap-4">
+                                    <div class="flex-shrink-0 mt-1.5">
+                                        <div [class]="getPriorityDot(req.priority)" class="ring-4 ring-white shadow-sm">
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between items-start mb-1">
+                                            <h4 class="text-sm font-bold text-gray-900 truncate pr-4">{{ req.title }}
+                                            </h4>
+                                            <span class="text-xs text-gray-400 whitespace-nowrap">{{ req.createdAt |
+                                                date:'MMM d' }}</span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 line-clamp-2 mb-3">{{ req.description }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <span
+                                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                                                {{ req.category }}
+                                            </span>
+                                            <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                            <span [class]="getMaintenanceStatusClass(req.status)">{{ req.status
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            } @empty {
+                            <div class="p-12 text-center text-gray-400">
+                                <i class="fa-solid fa-screwdriver-wrench text-3xl mb-3 opacity-30"></i>
+                                <p>No maintenance requests</p>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+        } @else {
+        <div class="flex items-center justify-center h-[60vh]">
+            <div class="flex flex-col items-center gap-4">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#007AFF]"></div>
+                <p class="text-gray-400 text-sm font-medium">Loading details...</p>
+            </div>
+        </div>
+        }
+    </div>
+</div>

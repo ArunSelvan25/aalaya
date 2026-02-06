@@ -1,0 +1,90 @@
+<nav
+  class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/60 support-[backdrop-filter]:bg-white/60">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+
+      <!-- Search Bar -->
+      <div class="flex-1 flex max-w-2xl ml-12 lg:ml-0">
+        <div class="relative w-full max-w-md group">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i
+              class="fa-solid fa-magnifying-glass text-gray-400 text-sm group-focus-within:text-[#007AFF] transition-colors duration-200"></i>
+          </div>
+          <input type="text" class="block w-full pl-10 pr-3 py-2 border-none rounded-xl leading-5 bg-gray-100 text-gray-900 placeholder-gray-500 
+                   focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#007AFF]/20 focus:shadow-sm
+                   transition-all duration-200 ease-in-out sm:text-sm" placeholder="Search..." />
+        </div>
+      </div>
+
+      <!-- Right Side Actions -->
+      <div class="flex items-center gap-6">
+
+        <!-- User Profile -->
+        @if (currentUser()) {
+        <div class="hidden md:flex items-center gap-3 pl-6 border-l border-gray-200">
+          <div class="text-right hidden lg:block">
+            <div class="text-sm font-semibold text-gray-900 leading-tight">{{ currentUser()?.name }}</div>
+            <div class="text-xs text-gray-500 font-medium">{{ currentUser()?.email }}</div>
+          </div>
+
+          <button class="relative group cursor-pointer focus:outline-none">
+            <div
+              class="relative h-10 w-10 rounded-full overflow-hidden ring-2 ring-transparent group-hover:ring-gray-200 transition-all duration-200">
+              <img [src]="currentUser()?.avatar || 'assets/default-avatar.png'" [alt]="currentUser()?.name"
+                class="h-full w-full object-cover" />
+            </div>
+            <div class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white"></div>
+          </button>
+        </div>
+        } @else {
+        <div class="hidden md:flex items-center gap-3">
+          <button routerLink="/login"
+            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors">
+            Log in
+          </button>
+          <button routerLink="/register"
+            class="px-5 py-2 text-sm font-medium text-white bg-[#007AFF] rounded-full hover:bg-[#0070E0] shadow-sm shadow-blue-200 transition-all transform active:scale-95">
+            Sign up
+          </button>
+        </div>
+        }
+
+        <!-- Mobile Menu Button -->
+        <button type="button"
+          class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#007AFF]"
+          onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+          <span class="sr-only">Open main menu</span>
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-xl">
+    <div class="pt-4 pb-4 px-4 space-y-4">
+      @if (currentUser()) {
+      <div class="flex items-center px-2">
+        <div class="flex-shrink-0">
+          <img [src]="currentUser()?.avatar || 'assets/default-avatar.png'" class="h-10 w-10 rounded-full" alt="" />
+        </div>
+        <div class="ml-3">
+          <div class="text-base font-medium leading-none text-gray-800">{{ currentUser()?.name }}</div>
+          <div class="text-sm font-medium leading-none text-gray-500 mt-1">{{ currentUser()?.email }}</div>
+        </div>
+      </div>
+      } @else {
+      <div class="space-y-2">
+        <button routerLink="/login"
+          class="w-full py-2.5 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-200">
+          Log in
+        </button>
+        <button routerLink="/register"
+          class="w-full py-2.5 text-sm font-medium text-white bg-[#007AFF] rounded-lg hover:bg-[#0060DF]">
+          Sign up
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,196 @@
+<div class="p-8 bg-[#F5F5F7] min-h-screen font-sans antialiased text-[#1D1D1F]">
+    <div class="max-w-5xl mx-auto mb-10 flex items-end justify-between">
+        <div>
+            <h1 class="text-4xl font-bold tracking-tight">Finance</h1>
+            <p class="text-[#86868B] mt-1 text-lg font-medium">Track income, expenses, and cash flow.</p>
+        </div>
+        <button (click)="openAddModal()"
+            class="px-6 py-2.5 bg-[#0071E3] text-white rounded-full font-semibold hover:bg-[#0077ED] transition-all active:scale-95 shadow-sm">
+            Add Transaction
+        </button>
+    </div>
+
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100/50">
+            <p class="text-[11px] font-bold text-[#86868B] uppercase tracking-wider mb-1">Total Income</p>
+            <p class="text-3xl font-bold text-[#34C759] tracking-tight">${{ totalIncome() | number:'1.2-2' }}</p>
+        </div>
+        <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100/50">
+            <p class="text-[11px] font-bold text-[#86868B] uppercase tracking-wider mb-1">Total Expenses</p>
+            <p class="text-3xl font-bold text-[#FF3B30] tracking-tight">${{ totalExpenses() | number:'1.2-2' }}</p>
+        </div>
+        <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100/50">
+            <p class="text-[11px] font-bold text-[#86868B] uppercase tracking-wider mb-1">Net Position</p>
+            <p class="text-3xl font-bold tracking-tight" [class.text-[#0071E3]]="netIncome() >= 0">${{ netIncome() |
+                number:'1.2-2' }}</p>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto bg-white rounded-[28px] shadow-sm border border-gray-100/50 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-gray-50">
+                    <th class="px-8 py-5 text-[11px] font-bold text-[#86868B] uppercase tracking-wider">Date &
+                        Description</th>
+                    <th class="px-6 py-5 text-[11px] font-bold text-[#86868B] uppercase tracking-wider">Category</th>
+                    <th class="px-6 py-5 text-[11px] font-bold text-[#86868B] uppercase tracking-wider text-right">
+                        Amount</th>
+                    <th class="px-6 py-5 text-[11px] font-bold text-[#86868B] uppercase tracking-wider">Status</th>
+                    <th class="px-8 py-5 text-[11px] font-bold text-[#86868B] uppercase tracking-wider text-right">
+                        Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @for (transaction of sortedTransactions(); track transaction.id) {
+                <tr class="hover:bg-[#F5F5F7]/50 transition-colors group">
+                    <td class="px-8 py-5">
+                        <div class="text-sm font-bold text-[#1D1D1F]">{{ transaction.description }}</div>
+                        <div class="text-[12px] text-[#86868B]">{{ transaction.date | date:'MMM d, y' }}</div>
+                    </td>
+                    <td class="px-6 py-5 whitespace-nowrap">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-[#F5F5F7] text-[#424245]">
+                            {{ transaction.category }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-5 text-right whitespace-nowrap font-bold text-sm"
+                        [class.text-[#34C759]]="transaction.type === 'Income'"
+                        [class.text-[#FF3B30]]="transaction.type === 'Expense'">
+                        {{ transaction.type === 'Income' ? '+' : '-' }}${{ transaction.amount | number:'1.2-2' }}
+                    </td>
+                    <td class="px-6 py-5 whitespace-nowrap">
+                        <span [class]="getStatusClass(transaction.status)">
+                            {{ transaction.status }}
+                        </span>
+                    </td>
+                    <td class="px-8 py-5 text-right whitespace-nowrap">
+                        <div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button (click)="openEditModal(transaction)"
+                                class="text-[#0071E3] hover:underline text-sm font-semibold">Edit</button>
+                            <button (click)="confirmDelete(transaction)"
+                                class="text-[#FF3B30] hover:underline text-sm font-semibold">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="5" class="px-8 py-20 text-center text-[#86868B] text-lg font-medium italic">
+                        No transactions found.
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (showModal) {
+    <div class="fixed inset-0 bg-black/20 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[32px] shadow-2xl max-w-lg w-full overflow-hidden">
+            <div class="px-8 pt-8 pb-4 flex items-center justify-between">
+                <h2 class="text-2xl font-bold tracking-tight">{{ isEditing ? 'Edit Transaction' : 'New Transaction' }}
+                </h2>
+                <button (click)="closeModal()"
+                    class="w-8 h-8 flex items-center justify-center bg-[#F5F5F7] rounded-full text-[#86868B] hover:text-black transition">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="px-8 pb-8 space-y-6">
+                <div class="bg-[#F5F5F7] rounded-2xl p-4 space-y-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-[#86868B] uppercase ml-1">Description</label>
+                        <input type="text" formControlName="description"
+                            class="w-full bg-white rounded-xl border-none ring-1 ring-black/5 focus:ring-2 focus:ring-[#0071E3] p-2.5 text-sm outline-none transition-all">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-[#86868B] uppercase ml-1">Type</label>
+                            <select formControlName="type"
+                                class="w-full bg-white rounded-xl border-none ring-1 ring-black/5 focus:ring-2 focus:ring-[#0071E3] p-2.5 text-sm outline-none">
+                                <option value="Income">Income</option>
+                                <option value="Expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-[#86868B] uppercase ml-1">Amount</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                                <input type="number" formControlName="amount"
+                                    class="w-full bg-white rounded-xl border-none ring-1 ring-black/5 focus:ring-2 focus:ring-[#0071E3] p-2.5 pl-7 text-sm outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#F5F5F7] rounded-2xl p-4 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-[#86868B] uppercase ml-1">Date</label>
+                            <input type="date" formControlName="date"
+                                class="w-full bg-white rounded-xl border-none ring-1 ring-black/5 focus:ring-2 focus:ring-[#0071E3] p-2.5 text-sm outline-none">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-[#86868B] uppercase ml-1">Category</label>
+                            <select formControlName="category"
+                                class="w-full bg-white rounded-xl border-none ring-1 ring-black/5 focus:ring-2 focus:ring-[#0071E3] p-2.5 text-sm outline-none">
+                                @if (transactionForm.get('type')?.value === 'Income') {
+                                <option value="Rent">Rent</option>
+                                <option value="Deposit">Deposit</option>
+                                <option value="Late Fee">Late Fee</option>
+                                <option value="Other">Other</option>
+                                } @else {
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Tax">Tax</option>
+                                <option value="Mortgage">Mortgage</option>
+                                <option value="Insurance">Insurance</option>
+                                <option value="Other">Other</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#F5F5F7] rounded-2xl p-4 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-[#86868B] uppercase ml-1">Property</label>
+                            <select formControlName="propertyId"
+                                class="w-full bg-white rounded-xl border-none ring-1 ring-black/5 focus:ring-2 focus:ring-[#0071E3] p-2.5 text-sm outline-none">
+                                <option value="">None</option>
+                                @for (prop of properties(); track prop.id) {
+                                <option [value]="prop.id">{{ prop.name }}</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-[#86868B] uppercase ml-1">Status</label>
+                            <select formControlName="status"
+                                class="w-full bg-white rounded-xl border-none ring-1 ring-black/5 focus:ring-2 focus:ring-[#0071E3] p-2.5 text-sm outline-none">
+                                <option value="Paid">Paid</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Overdue">Overdue</option>
+                                <option value="Failed">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 pt-4">
+                    <button type="submit" [disabled]="transactionForm.invalid"
+                        class="w-full py-4 bg-[#0071E3] text-white rounded-2xl font-bold hover:bg-[#0077ED] transition-all disabled:opacity-30 active:scale-[0.98]">
+                        {{ isEditing ? 'Save Changes' : 'Add Transaction' }}
+                    </button>
+                    <button type="button" (click)="closeModal()"
+                        class="w-full py-2 text-sm font-semibold text-[#0071E3] hover:underline transition-all">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+</div>

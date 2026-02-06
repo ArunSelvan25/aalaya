@@ -1,0 +1,128 @@
+@if (property(); as p) {
+<div class="p-6 min-h-screen bg-white">
+  <div class="max-w-8xl mx-auto space-y-12">
+
+    <!-- Gallery -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <img
+        [src]="selectedImage().startsWith('http') ? selectedImage() : '/assets/images/' + selectedImage()"
+        class="md:col-span-2 h-[420px] w-full object-cover rounded-2xl"
+      />
+
+      <div class="grid grid-cols-2 gap-3 max-h-[420px] overflow-y-auto">
+        @for (img of p.images; track img) {
+          <img
+            [src]="img.startsWith('http') ? img : '/assets/images/' + img"
+            (click)="selectImage(img)"
+            class="h-[130px] w-full object-cover rounded-xl cursor-pointer
+                   ring-1 ring-transparent transition"
+            [class.ring-primary]="selectedImage() === img"
+          />
+        }
+      </div>
+    </div>
+
+    <!-- SINGLE ROW BELOW IMAGE -->
+    <div class="grid grid-cols-12 gap-12 items-start">
+
+      <!-- LEFT: DETAILS -->
+      <div class="col-span-12 md:col-span-8 space-y-8">
+
+        <!-- Title -->
+        <div class="space-y-1">
+          <h1 class="text-lg font-semibold tracking-tight text-text">
+            {{ p.name }}
+          </h1>
+          <p class="text-sm text-text-muted">
+            {{ p.location?.address || p.address }}
+          </p>
+        </div>
+
+        <!-- Metrics -->
+        <div class="flex flex-wrap gap-12 text-sm">
+          <div>
+            <p class="text-text-muted">Bedrooms</p>
+            <p class="font-medium">{{ p.bedrooms || 'N/A' }}</p>
+          </div>
+          <div>
+            <p class="text-text-muted">Bathrooms</p>
+            <p class="font-medium">{{ p.bathrooms || 'N/A' }}</p>
+          </div>
+          <div>
+            <p class="text-text-muted">Area</p>
+            <p class="font-medium">{{ p.size_sqft || 'N/A' }} sqft</p>
+          </div>
+          <div>
+            <p class="text-text-muted">Type</p>
+            <p class="font-medium">{{ p.type }}</p>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="text-sm leading-relaxed text-text-muted max-w-3xl">
+          {{ p.description }}
+        </p>
+
+        <!-- Amenities -->
+        <div class="flex flex-wrap gap-2">
+          @for (amenity of p.amenities; track amenity) {
+            <span
+              class="px-3 py-1 text-xs rounded-full bg-neutral-100 text-neutral-600"
+            >
+              {{ amenity }}
+            </span>
+          }
+        </div>
+
+        <!-- Rules -->
+        @if (p.rules) {
+        <div class="flex gap-8 text-sm text-text-muted">
+          <span>{{ p.rules.petsAllowed ? 'Pets allowed' : 'No pets' }}</span>
+          <span>{{ p.rules.smokingAllowed ? 'Smoking allowed' : 'No smoking' }}</span>
+          <span>{{ p.rules.partiesAllowed ? 'Parties allowed' : 'No parties' }}</span>
+        </div>
+        }
+
+      </div>
+
+      <!-- RIGHT: PRICE + OWNER -->
+      <div class="col-span-12 md:col-span-4 space-y-10">
+
+        <!-- Price -->
+        <div>
+          <p class="text-2xl font-semibold tracking-tight text-text">
+            {{ p.price | currency: p.currency || 'INR' }}
+          </p>
+          <p class="text-sm text-text-muted">
+            per {{ (p.billingCycle || 'Monthly').toLowerCase() }}
+          </p>
+        </div>
+
+        <!-- Owner -->
+        @if (p.owner) {
+        <div class="pt-6 border-t border-neutral-200 space-y-3">
+          <div class="text-sm">
+            <span class="font-medium text-text">
+              {{ p.owner.name }}
+            </span>
+            @if (p.owner.verified) {
+              <span class="ml-1 text-primary text-xs">Verified</span>
+            }
+          </div>
+
+          <button class="btn btn-primary w-full shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transition-all">
+            Contact Owner
+          </button>
+        </div>
+        }
+
+      </div>
+
+    </div>
+  </div>
+</div>
+} @else {
+  <div class="flex items-center justify-center min-h-[400px]">
+    <p class="text-gray-500">Property not found.</p>
+  </div>
+}
